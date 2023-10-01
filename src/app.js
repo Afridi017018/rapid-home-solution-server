@@ -4,6 +4,7 @@ const cors =  require('cors');
 const morgan = require('morgan');
 
 const userRouter = require('./routers/userRouter')
+const serviceRouter = require('./routers/serviceRouter')
 
 
 app.use(morgan('dev'));
@@ -14,6 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 
 
 app.use('/api/user',userRouter);
+app.use('/api/services',serviceRouter);
 
 
 
