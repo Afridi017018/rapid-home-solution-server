@@ -85,6 +85,34 @@ const getServices = async (req, res) => {
 
 
 
+const getServiceById = async (req, res) => {
+    try {
+
+        const {id} = req.params;
+        const service = await Service.findById(id).populate("category");
+
+        console.log(id)
+
+        res.json({
+            success: true,
+            message: "Single service",
+            service
+        });
+
+    } catch (error) {
+        res.status(401).json({
+            success: false,
+            message: error.message,
+        });
+    }
+
+}
+
+
+
+
+
+
 
 const getCategories = async (req, res) => {
     try {
@@ -109,4 +137,4 @@ const getCategories = async (req, res) => {
 
 
 
-module.exports = { addService, addCategory, getServices, getCategories };
+module.exports = { addService, addCategory, getServices, getCategories, getServiceById };
