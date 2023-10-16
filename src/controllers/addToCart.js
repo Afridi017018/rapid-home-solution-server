@@ -37,7 +37,7 @@ const getCart = async(req,res)=>{
         const {userId} = req.params;
 
 
-       const cartData = await Cart.find({userId});
+       const cartData = await Cart.find({userId}).populate("serviceId").sort({createdAt: -1});
     //    console.log(cartData)
 
        
