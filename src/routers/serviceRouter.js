@@ -1,6 +1,7 @@
 const express = require('express');
 const { addToCart, getCart } = require('../controllers/addToCart');
 const { addCategory, getCategories } = require('../controllers/categoryController');
+const { addComment, getComments, updateComment } = require('../controllers/commentController');
 const { addFaq, getFaq } = require('../controllers/faqController');
 const { addService, getServices, getServiceById } = require('../controllers/serviceController');
 const { testPayment } = require('../controllers/testPaymentController');
@@ -24,6 +25,10 @@ router.post('/add-to-cart',addToCart);
 
 router.get('/get-cart/:userId', getCart);
 
+router.post('/add-comment', addComment);
+router.get('/get-comments', getComments);
+router.put('/update-comment', updateComment);
+
 
 
 
@@ -41,7 +46,7 @@ router.post('/create-payment-intent', async (req, res) => {
       amount ,
       currency  
     });
-    console.log(paymentIntent)
+    // console.log(paymentIntent)
     res.status(200).json(paymentIntent.client_secret);
 
 
@@ -75,6 +80,7 @@ router.post('/create-payment-intent', async (req, res) => {
 
 
 router.post('/save-payment', async (req, res) => {
+
   try {
     const { paymentIntentId } = req.body;
 

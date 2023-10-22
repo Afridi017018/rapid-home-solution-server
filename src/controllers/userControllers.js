@@ -92,29 +92,48 @@ const userLogin = async (req, res) => {
 
 
 
-const updateUser = async(req,res)=>{
-try {
+const updateUser = async (req, res) => {
+    try {
 
-    const {userId,name,phone,region,city,area,address} = req.body;
+        const { userId, name, phone, region, city, area, address } = req.body;
 
-    const updateData = await User.updateOne({ _id: userId }, { name, phone, region, city, area, address })
+        const updateData = await User.updateOne({ _id: userId }, { name, phone, region, city, area, address })
 
-    if (updateData.modifiedCount === 0) {
-        return res.status(404).json({
-          success: false,
-          message: "User not found or no changes were made.",
+        if (updateData.modifiedCount === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found or no changes were made.",
+            });
+        }
+
+        res.json({
+            success: true,
+            message: "User updated successfully",
+            updateData,
         });
-      }
-    
-    res.json({
-        success: true,
-        message: "User updated successfully",
-        updateData,
-    });
-} catch (error) {
-    
-}
+    } catch (error) {
+
+    }
 }
 
 
-module.exports = { userRegister, userLogin, updateUser };
+const getUser = async (req, res) => {
+    try {
+
+        const { userId } = req.params;
+
+        const userData = await User.find({ _id: userId },{ password: 0 })
+
+        
+        res.json({
+            success: true,
+            message: "User's Information",
+            userData,
+        });
+    } catch (error) {
+
+    }
+}
+
+
+module.exports = { userRegister, userLogin, updateUser, getUser };
