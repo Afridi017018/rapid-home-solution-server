@@ -33,11 +33,13 @@ const getComments = async (req, res) => {
 
     try {
 
-        const comment = await Comment.find().populate("serviceId").populate("userId");
+        const { serviceId } = req.params;
+
+        const comment = await Comment.find({ serviceId: serviceId }).populate("serviceId").populate("userId").sort({createdAt: -1});
 
         res.json({
             success: true,
-            message: "All comments",
+            message: "All comments By Service Id",
             comment,
         });
 

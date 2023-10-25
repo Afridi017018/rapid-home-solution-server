@@ -66,7 +66,7 @@ const getServiceById = async (req, res) => {
         const {id} = req.params;
         const service = await Service.findById(id).populate("category");
 
-        console.log(id)
+        // console.log(id)
 
         res.json({
             success: true,

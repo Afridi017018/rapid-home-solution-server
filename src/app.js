@@ -5,6 +5,7 @@ const morgan = require('morgan');
 
 const userRouter = require('./routers/userRouter')
 const serviceRouter = require('./routers/serviceRouter')
+const orderRouter = require('./routers/orderRouter')
 
 
 app.use(morgan('dev'));
@@ -16,6 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/user',userRouter);
 app.use('/api/services',serviceRouter);
+app.use('/api/orders',orderRouter);
 
 
 

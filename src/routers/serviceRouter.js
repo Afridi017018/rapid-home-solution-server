@@ -1,12 +1,14 @@
 const express = require('express');
+const router = express.Router();
+
 const { addToCart, getCart } = require('../controllers/addToCart');
 const { addCategory, getCategories } = require('../controllers/categoryController');
 const { addComment, getComments, updateComment } = require('../controllers/commentController');
 const { addFaq, getFaq } = require('../controllers/faqController');
 const { addService, getServices, getServiceById } = require('../controllers/serviceController');
 const { testPayment } = require('../controllers/testPaymentController');
-const router = express.Router();
-const stripe = require('stripe')("sk_test_51NxsVnLDN7M5wmwbO3C5GiLfEAtRjSv0mlSY3ST3mcZeiOGPAesqQSTi4YMHZEzfcxyitDoXlbQtEcRpss3aGZ4Q00cKFQbnkd");
+
+
 
 
 router.post('/add-service', addService);
@@ -26,81 +28,110 @@ router.post('/add-to-cart',addToCart);
 router.get('/get-cart/:userId', getCart);
 
 router.post('/add-comment', addComment);
-router.get('/get-comments', getComments);
+router.get('/get-comments/:serviceId', getComments);
 router.put('/update-comment', updateComment);
 
 
 
 
+const { Readable } = require("stream");
+const upload = require('../config/multerConfig');
+const cloudinary = require('../config/cloudinaryConfig')
+router.post('/imageTest', upload.single('image'), async(req,res)=>{
 
+  const imageStream = await Readable.from(req.file.buffer)
 
+  const imageUrl = [];
 
-
-
-
-
-router.post('/create-payment-intent', async (req, res) => {
-  try {
-    const {amount, currency} = req.body;
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount ,
-      currency  
+  await new Promise((resolve, reject) => {
+    
+    const cld_upload_stream = cloudinary.uploader.upload_stream({
+        folder: "rapid-home-solution/service-image",
+    }, (error, result) => {
+        if (result) {
+            const { secure_url, public_id } = result;
+            imageUrl.push({ public_id, secure_url });
+            resolve();
+        } else {
+            reject(error);
+        }
     });
-    // console.log(paymentIntent)
-    res.status(200).json(paymentIntent.client_secret);
 
-
-    // const customer = await stripe.customers.create();
-    // const ephemeralKey = await stripe.ephemeralKeys.create(
-    //   {customer: customer.id},
-    //   {apiVersion: '2022-08-01'}
-    // );
-    // const paymentIntent = await stripe.paymentIntents.create({
-    //   amount: amount,
-    //   currency: currency,
-    //   customer: customer.id,
-    //   payment_method_types: ['card'],
-    // });
-  
-
-    // console.log(paymentIntent)
-
-    // res.json({
-    //   paymentIntent: paymentIntent.client_secret,
-    //   ephemeralKey: ephemeralKey.secret,
-    //   customer: customer.id,
-    // });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'An error occurred while creating a payment intent.' });
-  }
+    imageStream.pipe(cld_upload_stream);
 });
 
+  res.send(imageUrl)
+})
 
 
 
-router.post('/save-payment', async (req, res) => {
 
-  try {
-    const { paymentIntentId } = req.body;
 
-    // Check if the payment intent with the given ID exists in Stripe
-    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+// router.post('/imageTest', async(req,res)=>{
 
-    if (paymentIntent.status === 'succeeded') {
+//   const deleteImage = (publicId) => {
+//     cloudinary.uploader.destroy(publicId, (error, result) => {
+//         if (result) {
+//             console.log(`Image deleted: ${publicId}`);
+//         } else {
+//             console.error(`Error deleting image ${publicId}:`, error);
+//         }
+//     });
+// };
 
-      console.log({ paymentId: paymentIntent });
 
-      res.status(200).json({ message: 'Payment information saved successfully.' });
-    } else {
-      // Payment failed or was not completed
-      res.status(400).json({ error: 'Payment not completed or failed.' });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'An error occurred while saving payment information.' });
-  }
-});
+//     deleteImage("rapid-home-solution/service-image/ufyrnmigvvbaamkubq0f");
+
+
+
+//   res.send("deleted")
+// })
+
+
+
+
+
+// const { Readable } = require("stream");
+// const upload = require('../config/multerConfig');
+// const cloudinary = require('../config/cloudinaryConfig')
+// router.post('/imageTest', upload.single('image'), async(req,res)=>{
+
+//   const imageStream = await Readable.from(req.file.buffer)
+
+//   const imageUrl = [];
+
+//   await new Promise((resolve, reject) => {
+    
+//     const cld_upload_stream = cloudinary.uploader.upload_stream({
+//         overwrite: true,
+//         public_id: "rapid-home-solution/service-image/ufyrnmigvvbaamkubq0f"
+//     }, (error, result) => {
+//         if (result) {
+//             const { secure_url, public_id } = result;
+//             imageUrl.push({ public_id, secure_url });
+//             resolve();
+//         } else {
+//             reject(error);
+//         }
+//     });
+
+//     imageStream.pipe(cld_upload_stream);
+// });
+
+//   res.send(imageUrl)
+// })
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
