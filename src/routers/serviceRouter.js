@@ -6,7 +6,6 @@ const { addCategory, getCategories } = require('../controllers/categoryControlle
 const { addComment, getComments, updateComment } = require('../controllers/commentController');
 const { addFaq, getFaq } = require('../controllers/faqController');
 const { addService, getServices, getServiceById } = require('../controllers/serviceController');
-const { testPayment } = require('../controllers/testPaymentController');
 
 
 
@@ -21,7 +20,6 @@ router.get('/get-all-categories', getCategories);
 router.post('/add-faq', addFaq);
 router.get('/get-faq', getFaq);
 
-router.post('/test-payment', testPayment);
 
 router.post('/add-to-cart',addToCart);
 

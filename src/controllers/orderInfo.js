@@ -1,3 +1,5 @@
+const OrderInfo = require('../models/orderInfoModel');
+const Rating = require('../models/ratingModel');
 const { stripePrivateKey } = require('../secret');
 
 const stripe = require('stripe')(stripePrivateKey);
@@ -5,11 +7,12 @@ const stripe = require('stripe')(stripePrivateKey);
 const createPaymentIntent = async (req, res) => {
     try {
         const { amount, currency } = req.body;
+
         const paymentIntent = await stripe.paymentIntents.create({
             amount,
             currency
         });
-        //   console.log(paymentIntent)
+          
         res.status(200).json(paymentIntent.client_secret);
 
 
@@ -43,18 +46,29 @@ const createPaymentIntent = async (req, res) => {
 const saveOrder = async (req, res) => {
 
     try {
-        const { userId, serviceId, paymentIntentId } = req.body;
+        const { userId, serviceId, paymentIntentId, amount } = req.body;
 
 
         const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
 
         if (paymentIntent.status === 'succeeded') {
 
-            console.log({ paymentId: paymentIntent.id, serviceId, userId });
+            const newOrder = new OrderInfo({
+                userId,
+                serviceId,
+                paymentId: paymentIntent.id,
+                amount
+            })
+
+            const saveOrder = await newOrder.save();
+            const orderId = saveOrder._id.toString();
+            
+            
 
             res.status(200).json({
                 success: true,
-                message: 'Payment information saved successfully.'
+                message: 'Payment information saved successfully.',
+                saveOrder
             });
         } else {
 
@@ -66,11 +80,53 @@ const saveOrder = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
-            message: error.message
+            message: error.message,
         });
     }
 }
 
 
 
-module.exports = { createPaymentIntent, saveOrder }
+
+const updateOrderStatus = async(req,res)=>{
+    
+    try {
+        const {orderId, status} = req.body;
+
+        const updateData = await OrderInfo.findByIdAndUpdate({_id:orderId}, {status});
+        
+        if(status === 'serviced')
+            {
+                const newRating = new Rating({
+                    userId : updateData.userId.toString(),
+                    serviceId: updateData.serviceId.toString(),
+                    orderId: updateData._id.toString(),
+                    rate: 0,
+                })
+
+                const saveRating = await newRating.save();
+                
+                // console.log(saveRating);
+            }
+
+        // console.log(updateData)
+
+
+        res.json({
+            success: true,
+            message: "Order status updated",
+
+        });
+
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+
+}
+
+
+module.exports = { createPaymentIntent, saveOrder, updateOrderStatus }
