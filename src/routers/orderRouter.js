@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createPaymentIntent, saveOrder, updateOrderStatus } = require('../controllers/orderInfo');
+const { createPaymentIntent, saveOrder, updateOrderStatus, getOrders } = require('../controllers/orderInfo');
 
 
 
@@ -8,6 +8,7 @@ const { createPaymentIntent, saveOrder, updateOrderStatus } = require('../contro
 
 router.post('/create-payment-intent', createPaymentIntent);
 router.post('/save-order', saveOrder);
+router.get('/get-orders/:userId', getOrders);
 
 router.put('/update-order-status', updateOrderStatus);
 

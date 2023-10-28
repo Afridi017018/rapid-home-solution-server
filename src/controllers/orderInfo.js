@@ -12,7 +12,7 @@ const createPaymentIntent = async (req, res) => {
             amount,
             currency
         });
-          
+
         res.status(200).json(paymentIntent.client_secret);
 
 
@@ -62,8 +62,8 @@ const saveOrder = async (req, res) => {
 
             const saveOrder = await newOrder.save();
             const orderId = saveOrder._id.toString();
-            
-            
+
+
 
             res.status(200).json({
                 success: true,
@@ -87,27 +87,52 @@ const saveOrder = async (req, res) => {
 
 
 
+const getOrders = async (req, res) => {
 
-const updateOrderStatus = async(req,res)=>{
-    
     try {
-        const {orderId, status} = req.body;
 
-        const updateData = await OrderInfo.findByIdAndUpdate({_id:orderId}, {status});
-        
-        if(status === 'serviced')
-            {
-                const newRating = new Rating({
-                    userId : updateData.userId.toString(),
-                    serviceId: updateData.serviceId.toString(),
-                    orderId: updateData._id.toString(),
-                    rate: 0,
-                })
+        const { userId } = req.params;
+        const orders = await OrderInfo.find({ userId });
 
-                const saveRating = await newRating.save();
-                
-                // console.log(saveRating);
-            }
+
+        res.json({
+            success: true,
+            message: "All orders",
+            orders
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+
+}
+
+
+
+
+
+const updateOrderStatus = async (req, res) => {
+
+    try {
+        const { orderId, status } = req.body;
+
+        const updateData = await OrderInfo.findByIdAndUpdate({ _id: orderId }, { status });
+
+        if (status === 'serviced') {
+            const newRating = new Rating({
+                userId: updateData.userId.toString(),
+                serviceId: updateData.serviceId.toString(),
+                orderId: updateData._id.toString(),
+                rate: 0,
+            })
+
+            const saveRating = await newRating.save();
+
+            // console.log(saveRating);
+        }
 
         // console.log(updateData)
 
@@ -129,4 +154,8 @@ const updateOrderStatus = async(req,res)=>{
 }
 
 
-module.exports = { createPaymentIntent, saveOrder, updateOrderStatus }
+
+
+
+
+module.exports = { createPaymentIntent, saveOrder, getOrders, updateOrderStatus }
