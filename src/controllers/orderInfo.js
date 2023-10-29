@@ -1,5 +1,4 @@
 const OrderInfo = require('../models/orderInfoModel');
-const Rating = require('../models/ratingModel');
 const { stripePrivateKey } = require('../secret');
 
 const stripe = require('stripe')(stripePrivateKey);
@@ -92,7 +91,7 @@ const getOrders = async (req, res) => {
     try {
 
         const { userId } = req.params;
-        const orders = await OrderInfo.find({ userId });
+        const orders = await OrderInfo.find({ userId }).populate('serviceId').sort({ createdAt: -1 });
 
 
         res.json({
@@ -119,22 +118,21 @@ const updateOrderStatus = async (req, res) => {
     try {
         const { orderId, status } = req.body;
 
-        const updateData = await OrderInfo.findByIdAndUpdate({ _id: orderId }, { status });
+
+
 
         if (status === 'serviced') {
-            const newRating = new Rating({
-                userId: updateData.userId.toString(),
-                serviceId: updateData.serviceId.toString(),
-                orderId: updateData._id.toString(),
-                rate: 0,
-            })
+            await OrderInfo.findByIdAndUpdate({ _id: orderId }, { status, rate: 0 });
 
-            const saveRating = await newRating.save();
+            const data = await OrderInfo.findById({ _id: orderId });
 
-            // console.log(saveRating);
+            await OrderInfo.findByIdAndUpdate({ _id: orderId }, { servicedAt: data.updatedAt });
         }
 
-        // console.log(updateData)
+        else {
+            await OrderInfo.findByIdAndUpdate({ _id: orderId }, { status, rate: -1, servicedAt: null });
+        }
+
 
 
         res.json({
@@ -157,5 +155,37 @@ const updateOrderStatus = async (req, res) => {
 
 
 
+const updateRating = async (req, res) => {
 
-module.exports = { createPaymentIntent, saveOrder, getOrders, updateOrderStatus }
+    try {
+        const { orderId, rate } = req.body;
+        console.log(orderId)
+
+        const updateData = await OrderInfo.findByIdAndUpdate({ _id: orderId }, { rate: rate });
+
+
+        res.json({
+            success: true,
+            message: "Rate updated",
+
+        });
+
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+
+}
+
+
+
+
+
+
+
+
+
+module.exports = { createPaymentIntent, saveOrder, getOrders, updateOrderStatus, updateRating }

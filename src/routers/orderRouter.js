@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createPaymentIntent, saveOrder, updateOrderStatus, getOrders } = require('../controllers/orderInfo');
+const { createPaymentIntent, saveOrder, updateOrderStatus, getOrders, updateRating} = require('../controllers/orderInfo');
 
 
 
@@ -11,5 +11,9 @@ router.post('/save-order', saveOrder);
 router.get('/get-orders/:userId', getOrders);
 
 router.put('/update-order-status', updateOrderStatus);
+
+router.put('/update-rating', updateRating)
+
+
 
 module.exports = router;

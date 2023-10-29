@@ -24,7 +24,15 @@ const orderInfoSchema = new mongoose.Schema({
     amount: {
         type: String,
         required: true
-    }
+    },
+    servicedAt: {
+        type: Date,
+        default: null
+    },
+    rate: {
+        type: Number,
+        default: -1
+    },
 
 }, { timestamps: true })
 
