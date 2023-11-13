@@ -7,10 +7,12 @@ const { addComment, getComments, updateComment } = require('../controllers/comme
 const { addFaq, getFaq } = require('../controllers/faqController');
 const { addService, getServices, getServiceById } = require('../controllers/serviceController');
 
+const { Readable } = require("stream");
+const upload = require('../config/multerConfig');
+const cloudinary = require('../config/cloudinaryConfig')
 
 
-
-router.post('/add-service', addService);
+router.post('/add-service',upload.single('image'), addService);
 router.get('/get-all-services', getServices);
 router.get('/get-service-by-id/:id', getServiceById);
 
@@ -32,9 +34,7 @@ router.put('/update-comment', updateComment);
 
 
 
-const { Readable } = require("stream");
-const upload = require('../config/multerConfig');
-const cloudinary = require('../config/cloudinaryConfig')
+
 router.post('/imageTest', upload.single('image'), async(req,res)=>{
 
   const imageStream = await Readable.from(req.file.buffer)

@@ -4,7 +4,8 @@ const { jwtSecret } = require("../secret");
 const authMiddleware = (req, res, next) => {
   try {
     
-    const {Authorization} = req.headers;
+    const {authorization} = req.headers;
+    // console.log(authorization)
     const token = authorization.split(" ")[1];
     const decryptedToken = jwt.verify(token, jwtSecret);
     req.userId = decryptedToken.userId;

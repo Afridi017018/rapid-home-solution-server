@@ -112,12 +112,15 @@ const updateUser = async (req, res) => {
             updateData,
         });
     } catch (error) {
-
+        res.status(401).json({
+            success: false,
+            message: error.message,
+        });
     }
 }
 
 
-const getUser = async (req, res) => {
+const getUserData = async (req, res) => {
     try {
 
         const { userId } = req.params;
@@ -131,9 +134,34 @@ const getUser = async (req, res) => {
             userData,
         });
     } catch (error) {
+        res.status(401).json({
+            success: false,
+            message: error.message,
+        });
+    }
+}
 
+const getUser = async (req, res) => {
+    try {
+
+        const { userId } = req;
+
+
+         const userData = await User.find({ _id: userId },{ password: 0 })
+
+        
+        res.json({
+            success: true,
+            message: "User's Information",
+            userData
+        });
+    } catch (error) {
+        res.status(401).json({
+            success: false,
+            message: error.message,
+        });
     }
 }
 
 
-module.exports = { userRegister, userLogin, updateUser, getUser };
+module.exports = { userRegister, userLogin, updateUser, getUserData, getUser };

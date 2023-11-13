@@ -20,8 +20,8 @@ const serviceSchema = new mongoose.Schema(
         required: true,
     },
     image: {
-      type: String,
-      default: "",
+      type: Array,
+      required: true,
     },
     duration: {
         type: Number,
