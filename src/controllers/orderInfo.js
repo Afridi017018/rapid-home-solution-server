@@ -96,6 +96,30 @@ const getOrders = async (req, res) => {
 
         res.json({
             success: true,
+            message: "All orders by user id",
+            orders
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+
+}
+
+
+
+
+const getAllOrders = async (req, res) => {
+
+    try {
+
+        const orders = await OrderInfo.find({}).populate('serviceId').sort({ createdAt: -1 });
+
+        res.json({
+            success: true,
             message: "All orders",
             orders
         });
@@ -117,9 +141,6 @@ const updateOrderStatus = async (req, res) => {
 
     try {
         const { orderId, status } = req.body;
-
-
-
 
         if (status === 'serviced') {
             await OrderInfo.findByIdAndUpdate({ _id: orderId }, { status, rate: 0 });
@@ -188,4 +209,4 @@ const updateRating = async (req, res) => {
 
 
 
-module.exports = { createPaymentIntent, saveOrder, getOrders, updateOrderStatus, updateRating }
+module.exports = { createPaymentIntent, saveOrder, getOrders, updateOrderStatus, updateRating, getAllOrders }
