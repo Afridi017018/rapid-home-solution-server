@@ -164,4 +164,24 @@ const getUser = async (req, res) => {
 }
 
 
-module.exports = { userRegister, userLogin, updateUser, getUserData, getUser };
+const getAllUsers = async (req, res) => {
+    try {
+
+         const usersData = await User.find({},{ password: 0 }).sort({createdAt: -1})
+
+        
+        res.json({
+            success: true,
+            message: "All users",
+            usersData
+        });
+    } catch (error) {
+        res.status(401).json({
+            success: false,
+            message: error.message,
+        });
+    }
+}
+
+
+module.exports = { userRegister, userLogin, updateUser, getUserData, getUser, getAllUsers };
