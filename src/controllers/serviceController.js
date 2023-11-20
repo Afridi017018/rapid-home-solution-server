@@ -3,7 +3,7 @@ const cloudinary = require('../config/cloudinaryConfig')
 const { Readable } = require("stream");
 
 const addService = async (req, res) => {
-
+// console.log(req.body)
     try {
 
         const imageStream = await Readable.from(req.file.buffer)
@@ -27,13 +27,13 @@ const addService = async (req, res) => {
             imageStream.pipe(cld_upload_stream);
         });
 
-        console.log(imageUrl)
+        // console.log(imageUrl)
 
 
 
         const { title, description, price, category, duration } = req.body;
 
-        console.log(req.body)
+        // console.log(req.body)
         const newService = new Service({
             title,
             description,
@@ -46,7 +46,7 @@ const addService = async (req, res) => {
 
         await newService.save();
 
-        console.log(newService)
+        // console.log(newService)
         res.json({
             success: true,
             message: "Services added successfully",

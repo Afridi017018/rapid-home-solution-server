@@ -2,6 +2,9 @@ const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 const User = require("../models/userModel");
 const { jwtSecret } = require("../secret");
+const cloudinary = require('../config/cloudinaryConfig')
+const { Readable } = require("stream");
+const JobReq = require('../models/jobReqModel')
 
 
 
@@ -125,9 +128,9 @@ const getUserData = async (req, res) => {
 
         const { userId } = req.params;
 
-        const userData = await User.find({ _id: userId },{ password: 0 })
+        const userData = await User.find({ _id: userId }, { password: 0 })
 
-        
+
         res.json({
             success: true,
             message: "User's Information",
@@ -147,9 +150,9 @@ const getUser = async (req, res) => {
         const { userId } = req;
 
 
-         const userData = await User.find({ _id: userId },{ password: 0 })
+        const userData = await User.find({ _id: userId }, { password: 0 })
 
-        
+
         res.json({
             success: true,
             message: "User's Information",
@@ -167,9 +170,9 @@ const getUser = async (req, res) => {
 const getAllUsers = async (req, res) => {
     try {
 
-         const usersData = await User.find({},{ password: 0 }).sort({createdAt: -1})
+        const usersData = await User.find({}, { password: 0 }).sort({ createdAt: -1 })
 
-        
+
         res.json({
             success: true,
             message: "All users",
@@ -184,4 +187,140 @@ const getAllUsers = async (req, res) => {
 }
 
 
-module.exports = { userRegister, userLogin, updateUser, getUserData, getUser, getAllUsers };
+
+
+
+const addJobReq = async (req, res) => {
+    try {
+
+        const { applicant, category } = req.body;
+
+        const check = await JobReq.findOne({ applicant, status: "pending" })
+
+        if (check) {
+            return res.status(409).json({
+                success: false,
+                message: "You cannot apply for a new job request at the moment",
+                // newApplication
+
+            });
+        }
+
+        const cvStream = await Readable.from(req.file.buffer)
+
+        const cvUrl = [];
+
+        await new Promise((resolve, reject) => {
+
+            const cld_upload_stream = cloudinary.uploader.upload_stream({
+                folder: "rapid-home-solution/job-cv",
+            }, (error, result) => {
+                if (result) {
+                    const { secure_url, public_id } = result;
+                    cvUrl.push({ public_id, secure_url });
+                    resolve();
+                } else {
+                    reject(error);
+                }
+            });
+
+            cvStream.pipe(cld_upload_stream);
+        });
+
+
+        const newApplication = new JobReq({
+            applicant,
+            category,
+            cv: cvUrl
+
+        })
+
+        await newApplication.save();
+
+
+        res.status(200).json({
+            success: true,
+            message: "Applied Successfully !",
+            newApplication
+
+        });
+    } catch (error) {
+        res.status(401).json({
+            success: false,
+            message: error.message,
+        });
+    }
+}
+
+
+
+
+
+const getAllApplications = async (req, res) => {
+    try {
+
+        const applicationData = await JobReq.find({}).populate("applicant", { password: 0 }).populate("category").sort({ createdAt: -1 })
+
+
+        res.json({
+            success: true,
+            message: "All applications",
+            applicationData
+        });
+    } catch (error) {
+        res.status(401).json({
+            success: false,
+            message: error.message,
+        });
+    }
+}
+
+const getApplicationsByUser = async (req, res) => {
+    try {
+
+        const {id} = req.params;
+
+        const applicationData = await JobReq.find({applicant: id}).populate("applicant", { password: 0 }).populate("category").sort({ createdAt: -1 })
+
+
+        res.json({
+            success: true,
+            message: "All applications by user",
+            applicationData
+        });
+    } catch (error) {
+        res.status(401).json({
+            success: false,
+            message: error.message,
+        });
+    }
+}
+
+
+
+
+
+const updateApplicationStatus = async (req,res)=>{
+    try {
+        const {id,status} = req.body;
+        const data = await JobReq.findByIdAndUpdate({_id: id}, {status});
+
+
+        res.json({
+            success: true,
+            message: "Status updated",
+
+        });
+    } catch (error) {
+        res.status(401).json({
+            success: false,
+            message: error.message,
+        });
+    }
+}
+
+
+
+
+
+module.exports = { userRegister, userLogin, updateUser, getUserData, getUser, getAllUsers, addJobReq, getAllApplications, getApplicationsByUser, updateApplicationStatus };

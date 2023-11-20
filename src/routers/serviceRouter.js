@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+const upload = require('../config/multerConfig');
+
 const { addToCart, getCart } = require('../controllers/addToCart');
 const { addCategory, getCategories } = require('../controllers/categoryController');
 const { addComment, getComments, updateComment } = require('../controllers/commentController');
@@ -8,7 +10,7 @@ const { addFaq, getFaq } = require('../controllers/faqController');
 const { addService, getServices, getServiceById, updateService, deleteService } = require('../controllers/serviceController');
 
 const { Readable } = require("stream");
-const upload = require('../config/multerConfig');
+
 const cloudinary = require('../config/cloudinaryConfig')
 
 

@@ -12,6 +12,8 @@ const createPaymentIntent = async (req, res) => {
             currency
         });
 
+        // console.log(paymentIntent.client_secret)
+
         res.status(200).json(paymentIntent.client_secret);
 
 
@@ -60,7 +62,7 @@ const saveOrder = async (req, res) => {
             })
 
             const saveOrder = await newOrder.save();
-            const orderId = saveOrder._id.toString();
+            // const orderId = saveOrder._id.toString();
 
 
 
