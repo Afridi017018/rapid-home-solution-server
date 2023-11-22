@@ -3,7 +3,7 @@ const cloudinary = require('../config/cloudinaryConfig')
 const { Readable } = require("stream");
 
 const addService = async (req, res) => {
-// console.log(req.body)
+    // console.log(req.body)
     try {
 
         const imageStream = await Readable.from(req.file.buffer)
@@ -120,16 +120,25 @@ const getServices = async (req, res) => {
 const getServiceById = async (req, res) => {
     try {
 
-        const { id } = req.params;
+        const { id, serviceType } = req.query;
+
+
+
         const service = await Service.findById(id).populate("category");
 
-        // console.log(id)
 
+        if (serviceType === 'quick') {
+
+            service.price = service.price + ((10 / 100) * (service.price))
+
+        }
+        
         res.json({
             success: true,
-            message: "Single service",
+            message: "Single general service",
             service
         });
+
 
     } catch (error) {
         res.status(401).json({

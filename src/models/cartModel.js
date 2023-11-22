@@ -13,7 +13,12 @@ const cartSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'services'
-    }
+    },
+    quick: {
+        type: Boolean,
+        required: true,
+      },
+
 },
     { timestamps: true }
 

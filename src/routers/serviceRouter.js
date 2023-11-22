@@ -3,7 +3,7 @@ const router = express.Router();
 
 const upload = require('../config/multerConfig');
 
-const { addToCart, getCart } = require('../controllers/addToCart');
+const { addToCart, getCart, getCartByCartId } = require('../controllers/addToCart');
 const { addCategory, getCategories } = require('../controllers/categoryController');
 const { addComment, getComments, updateComment } = require('../controllers/commentController');
 const { addFaq, getFaq } = require('../controllers/faqController');
@@ -17,7 +17,7 @@ const cloudinary = require('../config/cloudinaryConfig')
 router.post('/add-service', upload.single('image'), addService);
 router.put('/update-service', updateService)
 router.get('/get-all-services', getServices);
-router.get('/get-service-by-id/:id', getServiceById);
+router.get('/get-service-by-id', getServiceById);
 router.delete('/delete-service/:id', deleteService)
 
 router.post('/add-category', addCategory);
@@ -28,8 +28,9 @@ router.get('/get-faq', getFaq);
 
 
 router.post('/add-to-cart', addToCart);
-
 router.get('/get-cart/:userId', getCart);
+router.get('/get-cart-by-cart-id/:cartId', getCartByCartId);
+
 
 router.post('/add-comment', addComment);
 router.get('/get-comments/:serviceId', getComments);

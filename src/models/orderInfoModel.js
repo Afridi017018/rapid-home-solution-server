@@ -17,9 +17,13 @@ const orderInfoSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    quick: {
+        type: Boolean,
+        required: true
+    },
     status: {
         type: String,
-        default: "pending"
+        required: true
     },
     amount: {
         type: String,

@@ -47,8 +47,13 @@ const createPaymentIntent = async (req, res) => {
 const saveOrder = async (req, res) => {
 
     try {
-        const { userId, serviceId, paymentIntentId, amount } = req.body;
+        const { userId, serviceId, paymentIntentId, amount, quick } = req.body;
 
+        let status = 'pending';
+        if(quick)
+        {
+            status = "confirmed"
+        }
 
         const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
 
@@ -58,7 +63,9 @@ const saveOrder = async (req, res) => {
                 userId,
                 serviceId,
                 paymentId: paymentIntent.id,
-                amount
+                amount,
+                quick,
+                status
             })
 
             const saveOrder = await newOrder.save();
