@@ -129,7 +129,7 @@ const getServiceById = async (req, res) => {
 
         if (serviceType === 'quick') {
 
-            service.price = service.price + ((10 / 100) * (service.price))
+            service.price = service.price + ((15 / 100) * (service.price))
 
         }
         
