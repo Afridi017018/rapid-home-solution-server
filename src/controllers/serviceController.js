@@ -97,7 +97,21 @@ const updateService = async (req, res) => {
 const getServices = async (req, res) => {
     try {
 
-        const services = await Service.find().populate("category").sort({ createdAt: -1 });
+       const {search, filter} = req.query;
+
+       let query = {};
+
+       if(search !=="")
+       {
+        query.title = search;
+       }
+       if(filter !=="")
+       {
+        query.category = filter;
+       }
+
+
+        const services = await Service.find(query).populate("category").sort({ createdAt: -1 });
 
         res.json({
             success: true,
@@ -106,7 +120,7 @@ const getServices = async (req, res) => {
         });
 
     } catch (error) {
-        res.status(401).json({
+        res.status(500).json({
             success: false,
             message: error.message,
         });
