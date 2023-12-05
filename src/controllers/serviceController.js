@@ -97,27 +97,46 @@ const updateService = async (req, res) => {
 const getServices = async (req, res) => {
     try {
 
-       const {search, filter} = req.query;
+        const { search, filter, page, limit } = req.query;
 
-       let query = {};
+        const pageNumber = Number(page) || 1;
+        const itemsPerPage = limit !== "" ? Number(limit) : null;
 
-       if(search !=="")
-       {
-        query.title = search;
-       }
-       if(filter !=="")
-       {
-        query.category = filter;
-       }
+        let query = {};
+
+        if (search !== "") {
+            query.title = search;
+        }
+        if (filter !== "") {
+            query.category = filter;
+        }
 
 
-        const services = await Service.find(query).populate("category").sort({ createdAt: -1 });
+        if (itemsPerPage) {
+            const skip = (pageNumber - 1) * itemsPerPage;
 
-        res.json({
-            success: true,
-            message: "All services",
-            services
-        });
+            const services = await Service.find(query).populate("category").sort({ createdAt: -1 }).skip(skip).limit(itemsPerPage);
+
+            const totalServices = await Service.find(query).countDocuments();
+            const totalPages = Math.ceil(totalServices / itemsPerPage)
+
+            res.json({
+                success: true,
+                message: "All services",
+                services,
+                totalPages
+            });
+        }
+
+        else {
+            const services = await Service.find(query).populate("category").sort({ createdAt: -1 });
+
+            res.json({
+                success: true,
+                message: "All services",
+                services
+            });
+        }
 
     } catch (error) {
         res.status(500).json({
@@ -146,7 +165,7 @@ const getServiceById = async (req, res) => {
             service.price = service.price + ((15 / 100) * (service.price))
 
         }
-        
+
         res.json({
             success: true,
             message: "Single general service",
