@@ -4,7 +4,6 @@ const addToCart = async (req, res) => {
     try {
 
         const { userId, serviceId, quick } = req.body;
-        console.log(req.body)
 
         const newCart = new Cart({
             userId,
@@ -19,6 +18,28 @@ const addToCart = async (req, res) => {
             success: true,
             message: "Added to cart",
             newCart
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+}
+
+
+const removeCart = async (req, res) => {
+    try {
+
+        const { cartId } = req.params;
+
+        const data = await Cart.findByIdAndDelete({ _id: cartId })
+
+        res.json({
+            success: true,
+            message: "Successfully removed !",
+            data
         });
 
     } catch (error) {
@@ -87,4 +108,4 @@ const getCartByCartId = async (req, res) => {
 
 
 
-module.exports = { addToCart, getCart, getCartByCartId }
+module.exports = { addToCart, getCart, getCartByCartId, removeCart }

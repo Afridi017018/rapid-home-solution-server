@@ -3,7 +3,7 @@ const router = express.Router();
 
 const upload = require('../config/multerConfig');
 
-const { addToCart, getCart, getCartByCartId } = require('../controllers/addToCart');
+const { addToCart, getCart, getCartByCartId, removeCart } = require('../controllers/addToCart');
 const { addCategory, getCategories } = require('../controllers/categoryController');
 const { addComment, getComments, updateComment } = require('../controllers/commentController');
 const { addFaq, getFaq } = require('../controllers/faqController');
@@ -29,6 +29,7 @@ router.get('/get-faq', getFaq);
 
 router.post('/add-to-cart', addToCart);
 router.get('/get-cart/:userId', getCart);
+router.delete('/remove-cart/:cartId', removeCart);
 router.get('/get-cart-by-cart-id/:cartId', getCartByCartId);
 
 
