@@ -1,6 +1,7 @@
 const Service = require("../models/serviceModel");
 const cloudinary = require('../config/cloudinaryConfig')
 const { Readable } = require("stream");
+const OrderInfo = require("../models/orderInfoModel");
 
 const addService = async (req, res) => {
     // console.log(req.body)
@@ -228,7 +229,42 @@ const deleteService = async (req, res) => {
 
 
 
+const getServiceRating = async (req, res) => {
+
+    try {
+
+        const { serviceId } = req.params
+
+        const data = await OrderInfo.find({serviceId, rate: {$gt: 0}});
+         
+        const rate = data.map((e)=> e.rate);
+        
+        const totalRating = rate.reduce((e,c)=> e + c , 0) || 0;
+        const totalPeople = rate.length || 0;
+        const avg = totalRating > 0 ? (totalRating / totalPeople).toFixed(1) : 0;
+
+    
+        res.json({
+            success: true,
+            data: {
+                totalRating,
+                totalPeople,
+                avg,
+            }
+            
+        });
+
+    } catch (error) {
+        res.status(401).json({
+            success: false,
+            message: error.message,
+        });
+    }
+
+}
 
 
 
-module.exports = { addService, updateService, getServices, getServiceById, deleteService };
+
+
+module.exports = { addService, updateService, getServices, getServiceById, deleteService, getServiceRating };

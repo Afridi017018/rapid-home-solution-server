@@ -7,11 +7,11 @@ const { addToCart, getCart, getCartByCartId, removeCart } = require('../controll
 const { addCategory, getCategories } = require('../controllers/categoryController');
 const { addComment, getComments, updateComment } = require('../controllers/commentController');
 const { addFaq, getFaq } = require('../controllers/faqController');
-const { addService, getServices, getServiceById, updateService, deleteService } = require('../controllers/serviceController');
+const { addService, getServices, getServiceById, updateService, deleteService, getServiceRating } = require('../controllers/serviceController');
 
-const { Readable } = require("stream");
+// const { Readable } = require("stream");
 
-const cloudinary = require('../config/cloudinaryConfig')
+// const cloudinary = require('../config/cloudinaryConfig')
 
 
 router.post('/add-service', upload.single('image'), addService);
@@ -38,34 +38,36 @@ router.get('/get-comments/:serviceId', getComments);
 router.put('/update-comment', updateComment);
 
 
+router.get('/get-service-rating/:serviceId', getServiceRating)
 
 
 
-router.post('/imageTest', upload.single('image'), async (req, res) => {
 
-    const imageStream = await Readable.from(req.file.buffer)
+// router.post('/imageTest', upload.single('image'), async (req, res) => {
 
-    const imageUrl = [];
+//     const imageStream = await Readable.from(req.file.buffer)
 
-    await new Promise((resolve, reject) => {
+//     const imageUrl = [];
 
-        const cld_upload_stream = cloudinary.uploader.upload_stream({
-            folder: "rapid-home-solution/service-image",
-        }, (error, result) => {
-            if (result) {
-                const { secure_url, public_id } = result;
-                imageUrl.push({ public_id, secure_url });
-                resolve();
-            } else {
-                reject(error);
-            }
-        });
+//     await new Promise((resolve, reject) => {
 
-        imageStream.pipe(cld_upload_stream);
-    });
+//         const cld_upload_stream = cloudinary.uploader.upload_stream({
+//             folder: "rapid-home-solution/service-image",
+//         }, (error, result) => {
+//             if (result) {
+//                 const { secure_url, public_id } = result;
+//                 imageUrl.push({ public_id, secure_url });
+//                 resolve();
+//             } else {
+//                 reject(error);
+//             }
+//         });
 
-    res.send(imageUrl)
-})
+//         imageStream.pipe(cld_upload_stream);
+//     });
+
+//     res.send(imageUrl)
+// })
 
 
 
