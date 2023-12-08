@@ -106,7 +106,8 @@ const getServices = async (req, res) => {
         let query = {};
 
         if (search !== "") {
-            query.title = search;
+            const searchRegExp = new RegExp('.*' + search + '.*', 'i');
+            query.title = searchRegExp;
         }
         if (filter !== "") {
             query.category = filter;
