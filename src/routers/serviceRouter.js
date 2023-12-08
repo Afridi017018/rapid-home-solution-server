@@ -6,7 +6,7 @@ const upload = require('../config/multerConfig');
 const { addToCart, getCart, getCartByCartId, removeCart } = require('../controllers/addToCart');
 const { addCategory, getCategories } = require('../controllers/categoryController');
 const { addComment, getComments, updateComment } = require('../controllers/commentController');
-const { addFaq, getFaq } = require('../controllers/faqController');
+const { addFaq, getFaq, updateFaq, deleteFaq } = require('../controllers/faqController');
 const { addService, getServices, getServiceById, updateService, deleteService, getServiceRating } = require('../controllers/serviceController');
 
 // const { Readable } = require("stream");
@@ -25,6 +25,8 @@ router.get('/get-all-categories', getCategories);
 
 router.post('/add-faq', addFaq);
 router.get('/get-faq', getFaq);
+router.put('/update-faq', updateFaq);
+router.delete('/delete-faq/:id', deleteFaq);
 
 
 router.post('/add-to-cart', addToCart);
