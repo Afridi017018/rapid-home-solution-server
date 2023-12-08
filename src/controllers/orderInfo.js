@@ -143,6 +143,27 @@ const getAllOrders = async (req, res) => {
 }
 
 
+const getRecentOrders = async (req, res) => {
+
+    try {
+
+        const orders = await OrderInfo.find({}).populate('serviceId').sort({ createdAt: -1 }).limit(10);
+
+        res.json({
+            success: true,
+            message: "Recent orders",
+            orders
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+
+}
+
 
 
 
@@ -218,4 +239,4 @@ const updateRating = async (req, res) => {
 
 
 
-module.exports = { createPaymentIntent, saveOrder, getOrders, updateOrderStatus, updateRating, getAllOrders }
+module.exports = { createPaymentIntent, saveOrder, getOrders, updateOrderStatus, updateRating, getAllOrders, getRecentOrders }
