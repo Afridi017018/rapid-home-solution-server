@@ -123,6 +123,42 @@ const updateUser = async (req, res) => {
 }
 
 
+
+
+
+
+const updateRole = async (req, res) => {
+    try {
+
+        const { userId, role } = req.body;
+
+        const updateData = await User.updateOne({ _id: userId }, { role })
+
+        // if (updateData.modifiedCount === 0) {
+        //     return res.status(404).json({
+        //         success: false,
+        //         message: "User not found or no changes were made.",
+        //     });
+        // }
+
+        res.json({
+            success: true,
+            message: "Role updated successfully",
+            updateData,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+}
+
+
+
+
+
+
 const getUserData = async (req, res) => {
     try {
 
@@ -323,4 +359,4 @@ const updateApplicationStatus = async (req,res)=>{
 
 
 
-module.exports = { userRegister, userLogin, updateUser, getUserData, getUser, getAllUsers, addJobReq, getAllApplications, getApplicationsByUser, updateApplicationStatus };
+module.exports = { userRegister, userLogin, updateUser, getUserData, getUser, getAllUsers, addJobReq, getAllApplications, getApplicationsByUser, updateApplicationStatus, updateRole };

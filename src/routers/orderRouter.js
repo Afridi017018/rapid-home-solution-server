@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createPaymentIntent, saveOrder, updateOrderStatus, getOrders, updateRating, getAllOrders, getRecentOrders} = require('../controllers/orderInfo');
+const { createPaymentIntent, saveOrder, updateOrderStatus, getOrders, updateRating, getAllOrders, getRecentOrders } = require('../controllers/orderInfo');
 
 
 
