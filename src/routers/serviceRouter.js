@@ -8,36 +8,37 @@ const { addCategory, getCategories } = require('../controllers/categoryControlle
 const { addComment, getComments, updateComment } = require('../controllers/commentController');
 const { addFaq, getFaq, updateFaq, deleteFaq } = require('../controllers/faqController');
 const { addService, getServices, getServiceById, updateService, deleteService, getServiceRating } = require('../controllers/serviceController');
+const authMiddleware = require('../middlewares/authMiddleWare');
 
 // const { Readable } = require("stream");
 
 // const cloudinary = require('../config/cloudinaryConfig')
 
 
-router.post('/add-service', upload.single('image'), addService);
-router.put('/update-service', updateService)
+router.post('/add-service', authMiddleware, upload.single('image'), addService);
+router.put('/update-service',authMiddleware, updateService)
 router.get('/get-all-services', getServices);
 router.get('/get-service-by-id', getServiceById);
-router.delete('/delete-service/:id', deleteService)
+router.delete('/delete-service/:id',authMiddleware, deleteService)
 
-router.post('/add-category', addCategory);
+router.post('/add-category',authMiddleware, addCategory);
 router.get('/get-all-categories', getCategories);
 
-router.post('/add-faq', addFaq);
+router.post('/add-faq', authMiddleware, addFaq);
 router.get('/get-faq', getFaq);
-router.put('/update-faq', updateFaq);
-router.delete('/delete-faq/:id', deleteFaq);
+router.put('/update-faq', authMiddleware, updateFaq);
+router.delete('/delete-faq/:id', authMiddleware, deleteFaq);
 
 
-router.post('/add-to-cart', addToCart);
-router.get('/get-cart/:userId', getCart);
-router.delete('/remove-cart/:cartId', removeCart);
-router.get('/get-cart-by-cart-id/:cartId', getCartByCartId);
+router.post('/add-to-cart', authMiddleware, addToCart);
+router.get('/get-cart/:userId', authMiddleware, getCart);
+router.delete('/remove-cart/:cartId', authMiddleware, removeCart);
+router.get('/get-cart-by-cart-id/:cartId', authMiddleware, getCartByCartId);
 
 
-router.post('/add-comment', addComment);
+router.post('/add-comment', authMiddleware, addComment);
 router.get('/get-comments/:serviceId', getComments);
-router.put('/update-comment', updateComment);
+router.put('/update-comment', authMiddleware, updateComment);
 
 
 router.get('/get-service-rating/:serviceId', getServiceRating)

@@ -9,16 +9,16 @@ const router = express.Router();
 router.post('/register', userRegister);
 router.post('/login', userLogin);
 router.get('/get-user', authMiddleware, getUser);
-router.get('/get-all-users', getAllUsers);
+router.get('/get-all-users', authMiddleware, getAllUsers);
 // router.get('/get-user/:userId', getUser);
-router.put('/update-user', updateUser);
+router.put('/update-user',authMiddleware, updateUser);
 
-router.post('/add-job-req', upload.single('cv'), addJobReq)
-router.get('/get-all-applications', getAllApplications)
-router.get('/get-applications-by-user/:id', getApplicationsByUser)
-router.put('/update-application-status', updateApplicationStatus)
+router.post('/add-job-req', authMiddleware, upload.single('cv'), addJobReq)
+router.get('/get-all-applications', authMiddleware, getAllApplications)
+router.get('/get-applications-by-user/:id',authMiddleware, getApplicationsByUser)
+router.put('/update-application-status', authMiddleware, updateApplicationStatus)
 
-router.put('/update-role', updateRole);
+router.put('/update-role', authMiddleware, updateRole);
 
 
 module.exports = router;
