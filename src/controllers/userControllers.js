@@ -134,12 +134,6 @@ const updateRole = async (req, res) => {
 
         const updateData = await User.updateOne({ _id: userId }, { role })
 
-        // if (updateData.modifiedCount === 0) {
-        //     return res.status(404).json({
-        //         success: false,
-        //         message: "User not found or no changes were made.",
-        //     });
-        // }
 
         res.json({
             success: true,
@@ -213,6 +207,25 @@ const getAllUsers = async (req, res) => {
             success: true,
             message: "All users",
             usersData
+        });
+    } catch (error) {
+        res.status(401).json({
+            success: false,
+            message: error.message,
+        });
+    }
+}
+
+const getAllEmployees = async (req, res) => {
+    try {
+
+        const employeesData = await User.find({role: "employee"}, { password: 0 }).sort({ createdAt: -1 })
+
+
+        res.json({
+            success: true,
+            message: "All employees",
+            employeesData
         });
     } catch (error) {
         res.status(401).json({
@@ -356,7 +369,27 @@ const updateApplicationStatus = async (req,res)=>{
 }
 
 
+const updateBookStatus = async (req,res)=>{
+    try {
+        const {employeeBookStatus, employeeId} = req.body;
+        const data = await User.findByIdAndUpdate({_id: employeeId}, {employeeBookStatus});
+
+
+        res.json({
+            success: true,
+            message: "Book status updated",
+
+        });
+    } catch (error) {
+        res.status(401).json({
+            success: false,
+            message: error.message,
+        });
+    }
+}
 
 
 
-module.exports = { userRegister, userLogin, updateUser, getUserData, getUser, getAllUsers, addJobReq, getAllApplications, getApplicationsByUser, updateApplicationStatus, updateRole };
+
+
+module.exports = { userRegister, userLogin, updateUser, getUserData, getUser, getAllUsers, addJobReq, getAllApplications, getApplicationsByUser, updateApplicationStatus, updateRole, getAllEmployees, updateBookStatus };

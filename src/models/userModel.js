@@ -58,6 +58,14 @@ const userSchema = new mongoose.Schema(
     country: {
       type: String,
       default: "Bangladesh",
+    },
+    employeeBookStatus: {
+      type: String,
+      default: "",
+    },
+    employeeCategory: {
+      type: String,
+      default: "",
     }
   },
   {
