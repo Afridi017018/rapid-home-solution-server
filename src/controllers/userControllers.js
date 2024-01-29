@@ -389,7 +389,25 @@ const updateBookStatus = async (req,res)=>{
 }
 
 
+const updateEmployeeCategory = async (req,res)=>{
+    try {
+        const {employeeId, employeeCategory} = req.body;
+        const data = await User.findByIdAndUpdate({_id: employeeId}, {employeeCategory});
+
+
+        res.json({
+            success: true,
+            message: "Employee category updated",
+
+        });
+    } catch (error) {
+        res.status(401).json({
+            success: false,
+            message: error.message,
+        });
+    }
+}
 
 
 
-module.exports = { userRegister, userLogin, updateUser, getUserData, getUser, getAllUsers, addJobReq, getAllApplications, getApplicationsByUser, updateApplicationStatus, updateRole, getAllEmployees, updateBookStatus };
+module.exports = { userRegister, userLogin, updateUser, getUserData, getUser, getAllUsers, addJobReq, getAllApplications, getApplicationsByUser, updateApplicationStatus, updateRole, getAllEmployees, updateBookStatus, updateEmployeeCategory };

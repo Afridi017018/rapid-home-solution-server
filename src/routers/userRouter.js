@@ -1,6 +1,6 @@
 const express = require('express');
 const upload = require('../config/multerConfig');
-const { userRegister, userLogin, updateUser, getUser, getAllUsers, addJobReq, getAllApplications, updateApplicationStatus, getApplicationsByUser, updateRole, getAllEmployees, updateBookStatus } = require('../controllers/userControllers');
+const { userRegister, userLogin, updateUser, getUser, getAllUsers, addJobReq, getAllApplications, updateApplicationStatus, getApplicationsByUser, updateRole, getAllEmployees, updateBookStatus, updateEmployeeCategory } = require('../controllers/userControllers');
 const authMiddleware = require('../middlewares/authMiddleWare');
 const router = express.Router();
 
@@ -23,5 +23,7 @@ router.put('/update-role', authMiddleware, updateRole);
 router.get('/get-all-employees', authMiddleware, getAllEmployees);
 
 router.put('/update-book-status', authMiddleware, updateBookStatus)
+
+router.put('/update-employee-category', authMiddleware, updateEmployeeCategory)
 
 module.exports = router;
