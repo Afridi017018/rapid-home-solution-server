@@ -1,6 +1,7 @@
 const Category = require("../models/categoryModel");
 const EmployeesWork = require("../models/employeesWorkModel");
 const OrderInfo = require("../models/orderInfoModel");
+const User = require("../models/userModel");
 
 
 const addWork = async (req, res) => {
@@ -37,6 +38,7 @@ const addWork = async (req, res) => {
             orderId,
             category: category.name,
             userName: info.userId.name,
+            userId: info.userId._id,
             userPhone: info.userId.phone,
             amount: info.serviceId.price,
             userAddress: `${info.userId.address}, ${info.userId.area}, ${info.userId.city}, ${info.userId.region}, ${info.userId.country}`,
@@ -68,6 +70,86 @@ const addWork = async (req, res) => {
 
 
 
+const getWork = async (req, res) => {
+
+    try {
+
+        const { employeeId } = req.params;
+
+        const data = await EmployeesWork.find({employeeId, status: "ongoing" });
 
 
-module.exports = { addWork };
+        res.json({
+            success: true,
+            message: "Current Work",
+            currentWork: data
+        });
+
+    } catch (error) {
+        res.status(401).json({
+            success: false,
+            message: error.message,
+        });
+    }
+
+}
+
+
+
+const updateWork = async (req, res) => {
+
+    try {
+
+        const { employeeBookStatus, orderId, orderStatus, workStatus, workId,employeeId } = req.body;
+
+        const data = await EmployeesWork.findByIdAndUpdate({_id: workId},{status: workStatus})
+        
+        const updateEmployeeBookStatus = await User.findByIdAndUpdate({_id: employeeId}, {employeeBookStatus})
+
+        const orderUpdate = await OrderInfo.findByIdAndUpdate({_id: orderId}, {status: orderStatus});
+
+        res.json({
+            success: true,
+            message: "Updated Work",
+            // currentWork: data
+        });
+
+    } catch (error) {
+        res.status(401).json({
+            success: false,
+            message: error.message,
+        });
+    }
+
+}
+
+
+
+
+const getWorkHistory = async (req, res) => {
+
+    try {
+
+        const { employeeId } = req.params;
+
+        const data = await EmployeesWork.find({employeeId, status: "history" });
+
+
+        res.json({
+            success: true,
+            message: "Current Work",
+            workHistory: data
+        });
+
+    } catch (error) {
+        res.status(401).json({
+            success: false,
+            message: error.message,
+        });
+    }
+
+}
+
+
+
+module.exports = { addWork, getWork, updateWork, getWorkHistory };

@@ -17,6 +17,11 @@ const employeesWorkSchema = new mongoose.Schema({
         required: true
 
     },
+    userId: {
+        type: String,
+        required: true
+
+    },
     userPhone: {
         type: String,
         required: true

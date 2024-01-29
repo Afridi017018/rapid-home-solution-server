@@ -1,5 +1,5 @@
 const express = require('express');
-const { addWork } = require('../controllers/employeesWorkController');
+const { addWork, getWork, updateWork, getWorkHistory } = require('../controllers/employeesWorkController');
 const router = express.Router();
 
 
@@ -7,6 +7,12 @@ const router = express.Router();
 
 
 router.post('/add-work', addWork);
+
+router.get('/get-work/:employeeId', getWork);
+
+router.get('/get-work-history/:employeeId', getWorkHistory);
+
+router.put('/update-work', updateWork);
 
 
 
